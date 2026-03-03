@@ -1,29 +1,36 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import cors from 'cors';
-import connectDB from "./db";
-import authRoutes from "./routes/authRoutes";
-
+import dotenv from "dotenv";
 dotenv.config();
+
+import express from "express";
+import mongoose from "mongoose";
+import cors from "cors";
+import authRoutes from "./routes/authRoutes";
 
 const app = express();
 
-// Middleware
-app.use(cors());
+// ✅ CORS must be first, before anything else
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+}));
+
+// ✅ Handle preflight requests explicitly
+app.options("/{*path}", cors());
+
+// ✅ Then your other middleware
 app.use(express.json());
 
-// Routes
-app.use('/api/auth', authRoutes);
+// ✅ Then your routes
+app.use("/api/auth", authRoutes);
 
-app.get('/', (req, res) => {
-  res.json({ message: 'CineCircle API is running' });
-});
-
-// Connect to DB first, then start server
-const PORT = process.env.PORT || 5000;
-
-connectDB().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
-});
+mongoose
+  .connect(process.env.MONGO_URI as string)
+  .then(() => {
+    console.log("Connected to MongoDB");
+    app.listen(process.env.PORT || 5000, () => {
+      console.log(`Server running on port ${process.env.PORT || 5000}`);
+    });
+  })
+  .catch((err) => console.error("MongoDB connection error:", err));
