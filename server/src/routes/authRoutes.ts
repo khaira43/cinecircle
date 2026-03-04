@@ -9,7 +9,7 @@ const router = Router();
 router.post("/register", validateRegister, register);
 router.post("/login", validateLogin, login);
 
-// Temporary test route — remove this after testing
+// Temporary test route — remove this after testings
 // router.get("/me", protect, (req: AuthRequest, res: Response) => {
 //   res.json({ message: "Token is valid!", user: req.user });
 // });
