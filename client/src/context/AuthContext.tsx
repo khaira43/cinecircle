@@ -1,20 +1,5 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
-
-interface User {
-  id: string;
-  username: string;
-  email: string;
-}
-
-interface AuthContextType {
-  user: User | null;
-  token: string | null;
-  login: (userData: User, token: string) => void;
-  logout: () => void;
-  isAuthenticated: boolean;
-}
-
-const AuthContext = createContext<AuthContextType | null>(null);
+import { useState, type ReactNode } from "react";
+import { AuthContext, type User } from "./authContextObject";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // On first load, check if a token is already saved
@@ -47,11 +32,4 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       {children}
     </AuthContext.Provider>
   );
-};
-
-// Custom hook — use this in any component instead of useContext(AuthContext)
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) throw new Error("useAuth must be used inside AuthProvider");
-  return context;
 };

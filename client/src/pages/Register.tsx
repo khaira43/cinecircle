@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/useAuth";
+import type { AxiosError } from "axios";
 import api from "../api/axiosInstance";
 
 interface RegisterFormData {
@@ -28,9 +29,10 @@ const Register = () => {
       // Use our context login function to save user + token
       login(response.data.user, response.data.token);
       navigate("/"); // redirect to home after registration
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const error = err as AxiosError<{ error?: string }>;
       setServerError(
-        err.response?.data?.error || "Registration failed. Please try again."
+          error.response?.data?.error || "Registration failed. Please try again."
       );
     }
   };
