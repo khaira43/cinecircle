@@ -1,55 +1,23 @@
-// server/src/models/Media.ts
-import mongoose, { Schema, Document } from 'mongoose';
-
-export type MediaType = 'movie' | 'tv_show';
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface IMedia extends Document {
   title: string;
-  type: MediaType;
-  genre: string[];
-  synopsis: string;
-  releaseYear: number;
-  posterUrl: string;
-  director: string;
+  type: "movie" | "show";
+  genre?: string;
+  synopsis?: string;
+  releaseYear?: number;
+  posterUrl?: string;
 }
 
-const MediaSchema = new Schema<IMedia>(
-  {
-    title: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    type: {
-      type: String,
-      enum: ['movie', 'tv_show'],  // only these two values are valid
-      required: true,
-    },
-    genre: {
-      type: [String],  // array of strings e.g. ['Action', 'Thriller']
-      required: true,
-    },
-    synopsis: {
-      type: String,
-      required: true,
-      maxlength: 1000,
-    },
-    releaseYear: {
-      type: Number,
-      required: true,
-      min: 1888,  // first film ever made
-      max: new Date().getFullYear(),
-    },
-    posterUrl: {
-      type: String,
-      default: '',
-    },
-    director: {
-      type: String,
-      default: 'Unknown',
-    },
-  },
-  { timestamps: true }
-);
+const MediaSchema = new Schema<IMedia>({
+  title: { type: String, required: true },
+  type: { type: String, enum: ["movie", "show"], required: true },
+  genre: { type: String },
+  synopsis: { type: String },
+  releaseYear: { type: Number },
+  posterUrl: { type: String },
+});
 
-export default mongoose.model<IMedia>('Media', MediaSchema);
+const Media = mongoose.model<IMedia>("Media", MediaSchema);
+
+export default Media;

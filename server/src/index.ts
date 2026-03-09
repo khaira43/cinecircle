@@ -5,6 +5,7 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import authRoutes from "./routes/authRoutes";
+import mediaRoutes from "./routes/mediaRoutes";
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use(express.json());
 
 // ✅ Then your routes
 app.use("/api/auth", authRoutes);
+app.use("/api/media", mediaRoutes);
 
 mongoose
   .connect(process.env.MONGO_URI as string)
