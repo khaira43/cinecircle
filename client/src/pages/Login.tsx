@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/useAuth";
+import type { AxiosError } from "axios";
 import api from "../api/axiosInstance";
 
 interface LoginFormData {
@@ -26,9 +27,10 @@ const Login = () => {
       const response = await api.post("/auth/login", data);
       login(response.data.user, response.data.token);
       navigate("/");
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const error = err as AxiosError<{ error?: string }>;
       setServerError(
-        err.response?.data?.error || "Login failed. Please try again."
+          error.response?.data?.error || "Login failed. Please try again."
       );
     }
   };
