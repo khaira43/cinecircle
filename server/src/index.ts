@@ -5,6 +5,7 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import authRoutes from "./routes/authRoutes";
+import mediaRoutes from "./routes/mediaRoutes";
 import reviewRoutes from "./routes/reviewRoutes"; 
 
 const app = express();
@@ -25,6 +26,7 @@ app.use(express.json());
 
 // ✅ Then your routes
 app.use("/api/auth", authRoutes);
+app.use("/api/media", mediaRoutes);
 app.use("/api/reviews", reviewRoutes); 
 
 mongoose
