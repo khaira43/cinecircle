@@ -1,50 +1,54 @@
 import type { MediaItem, Review } from "../types/media";
 
 export const mockMedia: MediaItem[] = [
-    {
-        id: "m1",
-        title: "Dune: Part Two",
-        type: "Movie",
-        genre: "Sci-Fi",
-        releaseYear: 2024,
-        posterUrl:
-            "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=600&auto=format&fit=crop",
-        description:
-            "Paul Atreides unites with the Fremen to seek justice and shape the destiny of Arrakis.",
-    },
-    {
-        id: "m2",
-        title: "The Bear",
-        type: "Show",
-        genre: "Drama",
-        releaseYear: 2022,
-        posterUrl:
-            "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=600&auto=format&fit=crop",
-        description:
-            "A young chef returns home to run his family sandwich shop while dealing with grief and chaos.",
-    },
-    {
-        id: "m3",
-        title: "Spider-Man: Across the Spider-Verse",
-        type: "Movie",
-        genre: "Animation",
-        releaseYear: 2023,
-        posterUrl:
-            "https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=600&auto=format&fit=crop",
-        description:
-            "Miles Morales teams up with Spider-People across the multiverse to confront a growing threat.",
-    },
-    {
-        id: "m4",
-        title: "Severance",
-        type: "Show",
-        genre: "Thriller",
-        releaseYear: 2022,
-        posterUrl:
-            "https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?w=600&auto=format&fit=crop",
-        description:
-            "Employees at Lumon Industries undergo a procedure that separates their work and personal memories.",
-    },
+  {
+    id: "m1",
+    title: "Dune: Part Two",
+    type: "Movie",
+    genre: "Sci-Fi",
+    releaseYear: 2024,
+    posterUrl:
+      "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=600&auto=format&fit=crop",
+    description:
+      "Paul Atreides unites with the Fremen to seek justice and shape the destiny of Arrakis.",
+    rating: 8.8
+  },
+  {
+    id: "m2",
+    title: "The Bear",
+    type: "Show",
+    genre: "Drama",
+    releaseYear: 2022,
+    posterUrl:
+      "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=600&auto=format&fit=crop",
+    description:
+      "A young chef returns home to run his family sandwich shop while dealing with grief and chaos.",
+    rating: 8.5
+  },
+  {
+    id: "m3",
+    title: "Spider-Man: Across the Spider-Verse",
+    type: "Movie",
+    genre: "Animation",
+    releaseYear: 2023,
+    posterUrl:
+      "https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=600&auto=format&fit=crop",
+    description:
+      "Miles Morales teams up with Spider-People across the multiverse to confront a growing threat.",
+    rating: 8.9
+  },
+  {
+    id: "m4",
+    title: "Severance",
+    type: "Show",
+    genre: "Thriller",
+    releaseYear: 2022,
+    posterUrl:
+      "https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?w=600&auto=format&fit=crop",
+    description:
+      "Employees at Lumon Industries undergo a procedure that separates their work and personal memories.",
+    rating: 8.7
+  }
 ];
 
 export const mockReviews: Review[] = [

@@ -56,16 +56,24 @@ const Home = () => {
                 </select>
             </div>
 
+            {(searchTerm || genreFilter !== "All") && (
+            <p className="result-count">
+                Showing {filteredMedia.length} {filteredMedia.length === 1 ? "result" : "results"}
+            </p>
+            )}
+
             <section className="media-grid" aria-label="Media list">
                 {filteredMedia.map((item) => (
                     <Link to={`/media/${item.id}`} className="media-card" key={item.id}>
                         <img src={item.posterUrl} alt={`${item.title} poster`} />
                         <div className="media-card-body">
                             <h2>{item.title}</h2>
+                            <p className="rating"></p>
+
                             <span className="badge">{item.type}</span>
-                            <p>
-                                {item.genre} • {item.releaseYear}
-                            </p>
+                           <p className="rating">
+                            ⭐ {item.rating} • {item.genre} • {item.releaseYear}
+                           </p>
                         </div>
                     </Link>
                 ))}

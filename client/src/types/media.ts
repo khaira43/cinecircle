@@ -8,6 +8,7 @@ export interface MediaItem {
     releaseYear: number;
     posterUrl: string;
     description: string;
+    rating: number;
 }
 
 export interface Review {
