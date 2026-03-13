@@ -7,6 +7,8 @@ import cors from "cors";
 import authRoutes from "./routes/authRoutes";
 import mediaRoutes from "./routes/mediaRoutes";
 import reviewRoutes from "./routes/reviewRoutes"; 
+import commentRoutes from "./routes/comments";
+import voteRoutes from "./routes/votes";
 
 const app = express();
 
@@ -28,6 +30,8 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/media", mediaRoutes);
 app.use("/api/reviews", reviewRoutes); 
+app.use("/api/comments", commentRoutes);
+app.use("/api/votes", voteRoutes);
 
 mongoose
   .connect(process.env.MONGO_URI as string)
