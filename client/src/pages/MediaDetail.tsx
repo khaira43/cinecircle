@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { getMediaById, getReviewsByMediaId } from "../api/mediaApi";
 import { useAuth } from "../context/useAuth";
 import type { MediaItem, Review } from "../types/media";
@@ -8,6 +8,7 @@ import CommentThread from "../components/reviews/CommentThread";
 
 const MediaDetail = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
     const { isAuthenticated, user } = useAuth();
     const [media, setMedia] = useState<MediaItem | null>(null);
     const [reviews, setReviews] = useState<Review[]>([]);
@@ -36,6 +37,9 @@ const MediaDetail = () => {
 
     return (
         <main className="page">
+            <button type="button" onClick={() => navigate("/")}>
+                ← Back to Browse
+            </button>
             <section className="media-detail">
                 <img src={media.posterUrl} alt={`${media.title} poster`} />
                 <div>
@@ -43,7 +47,7 @@ const MediaDetail = () => {
                     <p>
                         <span className="badge">{media.type}</span> {media.genre} • {media.releaseYear}
                     </p>
-                    <p>{media.description}</p>
+                    <p>{media.synopsis}</p>
                 </div>
             </section>
 

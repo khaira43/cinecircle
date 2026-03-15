@@ -64,7 +64,7 @@ const Home = () => {
 
             <section className="media-grid" aria-label="Media list">
                 {filteredMedia.map((item) => (
-                    <Link to={`/media/${item.id}`} className="media-card" key={item.id}>
+                    <Link to={`/media/${item._id}`} className="media-card" key={item._id}>
                         <img src={item.posterUrl} alt={`${item.title} poster`} />
                         <div className="media-card-body">
                             <h2>{item.title}</h2>

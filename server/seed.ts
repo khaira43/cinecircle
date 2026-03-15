@@ -11,7 +11,7 @@ const seedMedia = [
     genre: "Sci-Fi",
     synopsis: "A thief enters dreams to steal secrets and is given a chance at redemption.",
     releaseYear: 2010,
-    posterUrl: "https://image.tmdb.org/t/p/w500/qmDpIHrmpJINaRKAfWQfftjCdyi.jpg",
+    posterUrl: "https://image.tmdb.org/t/p/w1280/xlaY2zyzMfkhk0HSC5VUwzoZPU1.jpg",
   },
   {
     title: "Interstellar",
@@ -35,7 +35,7 @@ const seedMedia = [
     genre: "Crime",
     synopsis: "A chemistry teacher turns to making meth.",
     releaseYear: 2008,
-    posterUrl: "https://image.tmdb.org/t/p/w500/eSzpy96DwBujGFj0xMbXBcGcfxX.jpg",
+    posterUrl: "https://image.tmdb.org/t/p/w1280/ztkUQFLlC19CCMYHW9o1zWhJRNq.jpg",
   },
   {
     title: "Stranger Things",

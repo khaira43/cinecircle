@@ -1,13 +1,13 @@
 export type MediaType = "Movie" | "Show";
 
 export interface MediaItem {
-    id: string;
+    _id: string;
     title: string;
     type: MediaType;
     genre: string;
     releaseYear: number;
     posterUrl: string;
-    description: string;
+    synopsis: string;
     rating: number;
 }
 

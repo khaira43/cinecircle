@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Media from "../models/Media";
+import mongoose from "mongoose";
 
 export const getAllMedia = async (_req: Request, res: Response) => {
   try {
@@ -12,7 +13,13 @@ export const getAllMedia = async (_req: Request, res: Response) => {
 
 export const getMediaById = async (req: Request, res: Response) => {
   try {
-    const media = await Media.findById(req.params.id);
+    const id = req.params.id as string;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(404).json({ message: "Media not found" });
+    }
+
+    const media = await Media.findById(id);
 
     if (!media) {
       return res.status(404).json({ message: "Media not found" });
