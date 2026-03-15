@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { getMediaById, getReviewsByMediaId } from "../api/mediaApi";
 import { useAuth } from "../context/useAuth";
 import type { MediaItem, Review } from "../types/media";
+import VoteButtons from "../components/reviews/VoteButtons";
 import ReviewForm from "../components/reviews/ReviewForm";
 import CommentThread from "../components/reviews/CommentThread";
 
@@ -56,8 +57,13 @@ const MediaDetail = () => {
                             <article key={review.id} className="review-card">
                                 <h3>@{review.username}</h3>
                                 <p>{review.content}</p>
+                                <VoteButtons
+                                    reviewId={review.id}
+                                    upvotes={review.upvoteScore}
+                                    downvotes={review.downvoteScore}
+                                />
                                 <p className="review-stats">
-                                    👍 {review.upvoteScore} • 👎 {review.downvoteScore} • 💬 {review.commentCount}
+                                    💬 {review.commentCount}
                                 </p>
                                 {canEdit && (
                                     <div className="review-actions">
