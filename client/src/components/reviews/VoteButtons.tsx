@@ -13,14 +13,12 @@ const VoteButtons = ({ reviewId, upvotes, downvotes }: Props) => {
 
   const handleUpvote = () => {
     if (userVote === 1) {
-      // remove upvote
       setUpvoteCount((prev) => prev - 1);
       setUserVote(null);
       return;
     }
 
     if (userVote === -1) {
-      // switch from downvote to upvote
       setDownvoteCount((prev) => prev - 1);
     }
 
@@ -30,14 +28,12 @@ const VoteButtons = ({ reviewId, upvotes, downvotes }: Props) => {
 
   const handleDownvote = () => {
     if (userVote === -1) {
-      // remove downvote
       setDownvoteCount((prev) => prev - 1);
       setUserVote(null);
       return;
     }
 
     if (userVote === 1) {
-      // switch from upvote to downvote
       setUpvoteCount((prev) => prev - 1);
     }
 
@@ -46,46 +42,13 @@ const VoteButtons = ({ reviewId, upvotes, downvotes }: Props) => {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "14px",
-        marginTop: "10px",
-      }}
-    >
-      <button
-        onClick={handleUpvote}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "6px",
-          padding: "6px 12px",
-          cursor: "pointer",
-          background: userVote === 1 ? "#2563eb" : "#1d4ed8",
-          color: "#fff",
-          border: "none",
-          borderRadius: "8px",
-        }}
-      >
-        👍 <span>{upvoteCount}</span>
+    <div style={{ display: "flex", gap: "12px", marginTop: "10px" }}>
+      <button onClick={handleUpvote}>
+        👍 {upvoteCount}
       </button>
 
-      <button
-        onClick={handleDownvote}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "6px",
-          padding: "6px 12px",
-          cursor: "pointer",
-          background: userVote === -1 ? "#2563eb" : "#1d4ed8",
-          color: "#fff",
-          border: "none",
-          borderRadius: "8px",
-        }}
-      >
-        👎 <span>{downvoteCount}</span>
+      <button onClick={handleDownvote}>
+        👎 {downvoteCount}
       </button>
     </div>
   );
