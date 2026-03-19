@@ -1,3 +1,5 @@
+import { calculateMediaRating } from "../utils/calculateRating";
+import { mockReviews } from "../mock/mockData";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { getMedia } from "../api/mediaApi";
@@ -57,26 +59,32 @@ const Home = () => {
             </div>
 
             {(searchTerm || genreFilter !== "All") && (
-            <p className="result-count">
-                Showing {filteredMedia.length} {filteredMedia.length === 1 ? "result" : "results"}
-            </p>
+                <p className="result-count">
+                    Showing {filteredMedia.length}{" "}
+                    {filteredMedia.length === 1 ? "result" : "results"}
+                </p>
             )}
 
             <section className="media-grid" aria-label="Media list">
-                {filteredMedia.map((item) => (
-                    <Link to={`/media/${item.id}`} className="media-card" key={item.id}>
-                        <img src={item.posterUrl} alt={`${item.title} poster`} />
-                        <div className="media-card-body">
-                            <h2>{item.title}</h2>
-                            <p className="rating"></p>
+                {filteredMedia.map((item) => {
+                    const rating = calculateMediaRating(item.id, mockReviews);
 
-                            <span className="badge">{item.type}</span>
-                           <p className="rating">
-                            ⭐ {item.rating} • {item.genre} • {item.releaseYear}
-                           </p>
-                        </div>
-                    </Link>
-                ))}
+                    return (
+                        <Link to={`/media/${item.id}`} className="media-card" key={item.id}>
+                            <img src={item.posterUrl} alt={`${item.title} poster`} />
+
+                            <div className="media-card-body">
+                                <h2>{item.title}</h2>
+
+                                <span className="badge">{item.type}</span>
+
+                                <p className="rating">
+                                    ⭐ {rating ?? "N/A"} • {item.genre} • {item.releaseYear}
+                                </p>
+                            </div>
+                        </Link>
+                    );
+                })}
             </section>
         </main>
     );

@@ -71,23 +71,20 @@ const MediaDetail = () => {
                                     style={{
                                         fontSize: "0.9rem",
                                         color: "#475569",
-                                        marginTop: "4px",
+                                        marginTop: "6px",
                                     }}
                                 >
                                     🎬 Story: {review.story} • 🎭 Acting: {review.acting} • 🎥 Cinematography: {review.cinematography}
                                 </div>
 
-                                {/* VOTING */}
-                                <VoteButtons
-                                    reviewId={review.id}
-                                    upvotes={review.upvoteScore}
-                                    downvotes={review.downvoteScore}
-                                />
-
-                                {/* COMMENTS COUNT */}
-                                <p className="review-stats">
-                                    💬 {review.commentCount}
-                                </p>
+                                {/* VOTES */}
+                                <div style={{ marginTop: "10px" }}>
+                                    <VoteButtons
+                                        reviewId={review.id}
+                                        upvotes={review.upvoteScore}
+                                        downvotes={review.downvoteScore}
+                                    />
+                                </div>
 
                                 {canEdit && (
                                     <div className="review-actions">
@@ -96,7 +93,7 @@ const MediaDetail = () => {
                                     </div>
                                 )}
 
-                                {/* COMMENTS */}
+                                {/* COMMENTS (this is the ONLY place comment count should exist) */}
                                 <CommentThread reviewId={review.id} />
                             </article>
                         );
@@ -105,7 +102,7 @@ const MediaDetail = () => {
             </section>
 
             {/* REVIEW FORM */}
-            <section className="review-form-section">
+            <section className="review-form-section" style={{ marginTop: "20px" }}>
                 <button type="button" onClick={() => setShowForm(true)}>
                     Write a Review
                 </button>

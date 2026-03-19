@@ -8,6 +8,7 @@ export interface MediaItem {
     releaseYear: number;
     posterUrl: string;
     description: string;
+    rating: number;
 }
 
 export interface Review {
@@ -21,7 +22,6 @@ export interface Review {
     downvoteScore: number;
     commentCount: number;
 
-    // 👇 ADD THESE
     story: number;
     acting: number;
     cinematography: number;

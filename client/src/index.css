@@ -328,3 +328,50 @@ button:disabled {
   font-size: 0.9rem;
   color: #334155;
 }
+
+.comment-thread {
+  margin-top: 0.75rem;
+}
+
+.comment-list {
+  display: grid;
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+  margin-top: 10px; /* keep both behaviors */
+}
+
+.comment-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8fafc;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.comment-input {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.comment-input input {
+  flex: 1;
+}
+
+.view-comments-btn {
+  margin-top: 10px;
+  background: none;
+  border: none;
+  color: #3b82f6;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.delete-comment {
+  background: none;
+  border: none;
+  color: red;
+  cursor: pointer;
+  font-size: 12px;
+}

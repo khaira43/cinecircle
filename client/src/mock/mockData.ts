@@ -61,7 +61,7 @@ export const mockReviews: Review[] = [
             "Huge scale and great world-building. The visuals were incredible and the pacing felt tighter than Part One.",
         upvoteScore: 34,
         downvoteScore: 5,
-        commentCount: 8,
+        commentCount: 1,
 
         story: 9,
         acting: 8,
@@ -97,4 +97,34 @@ export const mockReviews: Review[] = [
         acting: 9,
         cinematography: 8,
     },
+    {
+    id: "r4",
+    mediaId: "m3",
+    userId: "user-111",
+    username: "spideyfan",
+    content:
+        "Animation was insane. Probably one of the best superhero movies ever made.",
+    upvoteScore: 42,
+    downvoteScore: 3,
+    commentCount: 2,
+
+    story: 9,
+    acting: 8,
+    cinematography: 10,
+},
+{
+    id: "r5",
+    mediaId: "m4",
+    userId: "user-222",
+    username: "mindbender",
+    content:
+        "Super unique concept. Slow at times but the mystery keeps you hooked.",
+    upvoteScore: 25,
+    downvoteScore: 2,
+    commentCount: 1,
+
+    story: 8,
+    acting: 9,
+    cinematography: 9,
+},
 ];
