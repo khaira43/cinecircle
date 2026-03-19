@@ -62,6 +62,10 @@ export const mockReviews: Review[] = [
         upvoteScore: 34,
         downvoteScore: 5,
         commentCount: 8,
+
+        story: 9,
+        acting: 8,
+        cinematography: 10,
     },
     {
         id: "r2",
@@ -73,6 +77,10 @@ export const mockReviews: Review[] = [
         upvoteScore: 19,
         downvoteScore: 3,
         commentCount: 2,
+
+        story: 7,
+        acting: 9,
+        cinematography: 8,
     },
     {
         id: "r3",
@@ -84,5 +92,9 @@ export const mockReviews: Review[] = [
         upvoteScore: 27,
         downvoteScore: 1,
         commentCount: 6,
+
+        story: 8,
+        acting: 9,
+        cinematography: 8,
     },
 ];

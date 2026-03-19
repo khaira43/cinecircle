@@ -303,3 +303,28 @@ button:disabled {
 .media-card:hover::after {
   opacity: 1;
 }
+
+.review-form-section {
+  margin-top: 1.5rem;
+}
+
+.review-form {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.review-form textarea {
+  width: 100%;
+  resize: none;
+}
+
+.review-inputs {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.review-inputs label {
+  font-size: 0.9rem;
+  color: #334155;
+}
