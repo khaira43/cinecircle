@@ -2,10 +2,10 @@ import { useState, type ReactNode } from "react";
 import { AuthContext, type User } from "./authContextObject";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  // On first load, check if a token is already saved
   const [token, setToken] = useState<string | null>(
-    localStorage.getItem("token")
+      localStorage.getItem("token")
   );
+
   const [user, setUser] = useState<User | null>(() => {
     const saved = localStorage.getItem("user");
     return saved ? JSON.parse(saved) : null;
@@ -26,10 +26,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider
-      value={{ user, token, login, logout, isAuthenticated: !!token }}
-    >
-      {children}
-    </AuthContext.Provider>
+      <AuthContext.Provider
+          value={{ user, token, login, logout, isAuthenticated: !!token }}
+      >
+        {children}
+      </AuthContext.Provider>
   );
 };

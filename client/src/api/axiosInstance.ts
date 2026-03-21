@@ -1,10 +1,11 @@
 import axios from "axios";
 
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:5000";
+
 const api = axios.create({
-  baseURL: "http://localhost:5001/api", // change this to your deployed URL later
+  baseURL: `${apiBaseUrl}/api`,
 });
 
-// Before every request, grab the token from localStorage and attach it
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) {

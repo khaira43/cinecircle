@@ -1,5 +1,13 @@
 export type MediaType = "Movie" | "Show";
 
+export interface AverageRatings {
+    overall?: number;
+    reviewCount?: number;
+    story?: number;
+    acting?: number;
+    cinematography?: number;
+}
+
 export interface MediaItem {
     _id: string;
     title: string;
@@ -8,7 +16,14 @@ export interface MediaItem {
     releaseYear: number;
     posterUrl: string;
     synopsis: string;
-    rating: number;
+    rating?: number;
+    averageRatings?: AverageRatings;
+}
+
+export interface ReviewRatings {
+    story?: number;
+    acting?: number;
+    cinematography?: number;
 }
 
 export interface Review {
@@ -20,4 +35,5 @@ export interface Review {
     upvoteScore: number;
     downvoteScore: number;
     commentCount: number;
+    ratings?: ReviewRatings;
 }

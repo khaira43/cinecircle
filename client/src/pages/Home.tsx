@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { getMedia } from "../api/mediaApi";
 import type { MediaItem } from "../types/media";
 
+const formatRating = (rating: number) => rating.toFixed(1);
+
 const Home = () => {
     const [media, setMedia] = useState<MediaItem[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
@@ -34,9 +36,16 @@ const Home = () => {
 
     return (
         <main className="page">
-            <h1>Browse Movies & TV Shows</h1>
+            <section className="page-hero">
+                <p className="eyebrow">Browse</p>
+                <h1>Find your next movie night favorite.</h1>
+                <p className="page-subtitle">
+                    Explore community-reviewed movies and shows, then jump into the detail
+                    page for live audience activity and review breakdowns.
+                </p>
+            </section>
 
-            <div className="filters">
+            <div className="filters filters-panel">
                 <input
                     type="text"
                     placeholder="Search title..."
@@ -56,24 +65,39 @@ const Home = () => {
                 </select>
             </div>
 
-            {(searchTerm || genreFilter !== "All") && (
-            <p className="result-count">
-                Showing {filteredMedia.length} {filteredMedia.length === 1 ? "result" : "results"}
-            </p>
-            )}
-
             <section className="media-grid" aria-label="Media list">
                 {filteredMedia.map((item) => (
-                    <Link to={`/media/${item._id}`} className="media-card" key={item._id}>
+                    <Link
+                        to={`/media/${item._id}`}
+                        className="media-card"
+                        key={item._id}
+                    >
                         <img src={item.posterUrl} alt={`${item.title} poster`} />
                         <div className="media-card-body">
-                            <h2>{item.title}</h2>
-                            <p className="rating"></p>
+                            <div className="media-card-header">
+                                <h2>{item.title}</h2>
+                                <span className="badge">{item.type}</span>
+                            </div>
 
-                            <span className="badge">{item.type}</span>
-                           <p className="rating">
-                            ⭐ {item.rating} • {item.genre} • {item.releaseYear}
-                           </p>
+                            <p className="media-meta">
+                                {item.genre} • {item.releaseYear}
+                            </p>
+
+                            <div className="rating-summary">
+                                {item.averageRatings?.reviewCount &&
+                                item.averageRatings.reviewCount > 0 ? (
+                                    <>
+                                        <p className="rating-score">
+                                            ★ {formatRating(item.averageRatings.overall ?? 0)}
+                                        </p>
+                                        <p className="rating-count">
+                                            ({item.averageRatings.reviewCount} reviews)
+                                        </p>
+                                    </>
+                                ) : (
+                                    <p className="rating-empty">No reviews yet</p>
+                                )}
+                            </div>
                         </div>
                     </Link>
                 ))}
