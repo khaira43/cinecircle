@@ -11,7 +11,7 @@ import mediaRoutes from "./routes/mediaRoutes";
 import reviewRoutes from "./routes/reviewRoutes"; 
 import commentRoutes from "./routes/comments";
 import voteRoutes from "./routes/votes";
-
+import userRoutes from "./routes/users";
 const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
@@ -68,7 +68,7 @@ app.use("/api/media", mediaRoutes);
 app.use("/api/reviews", reviewRoutes); 
 app.use("/api/comments", commentRoutes);
 app.use("/api/votes", voteRoutes);
-
+app.use("/api/users", userRoutes);
 mongoose
   .connect(process.env.MONGO_URI as string)
   .then(() => {
