@@ -41,7 +41,7 @@ const MediaDetail = () => {
             setViewerCount(count);
         };
 
-        socket.connect();
+        // socket.connect() removed — the real socket.io client connects automatically on import
         socket.on("connect", handleJoinMedia);
         socket.on("viewer-count", handleViewerCount);
 
@@ -53,7 +53,7 @@ const MediaDetail = () => {
             socket.emit("leave-media", id);
             socket.off("connect", handleJoinMedia);
             socket.off("viewer-count", handleViewerCount);
-            socket.disconnect();
+            // socket.disconnect() removed — never disconnect inside a component
         };
     }, [id]);
 
