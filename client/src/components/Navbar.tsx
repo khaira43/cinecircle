@@ -11,30 +11,29 @@ const Navbar = () => {
     };
 
     return (
-    <nav className="navbar">
-        <Link to="/">CineCircle</Link>
+        <nav className="navbar">
+            <Link to="/">CineCircle</Link>
 
-        <div className="navbar-right">
-            <div className="navbar-links">
-                {isAuthenticated ? (
-                    <>
-                        <span>Hi, {user?.username}</span>
-                        <button onClick={handleLogout}>Log Out</button>
-                    </>
-                ) : (
-                    <>
-                        <Link to="/login">Log In</Link>
-                        <Link to="/register">Register</Link>
-                    </>
-                )}
+            <div className="navbar-right">
+                <div className="navbar-links">
+                    {isAuthenticated ? (
+                        <>
+                            <span>Hi, {user?.username}</span>
+                            <button onClick={handleLogout}>Log Out</button>
+                        </>
+                    ) : (
+                        <>
+                            <Link to="/login">Log In</Link>
+                            <Link to="/register">Register</Link>
+                        </>
+                    )}
+                </div>
+
+                <Link to="/settings" className="settings-icon">
+                    ⚙️
+                </Link>
             </div>
-
-            {/* ⚙️ OUTSIDE the links */}
-            <Link to="/settings" className="settings-icon">
-                ⚙️
-            </Link>
-        </div>
-    </nav>
+        </nav>
     );
 };
 

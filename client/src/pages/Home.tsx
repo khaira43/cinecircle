@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import { getMedia } from "../api/mediaApi";
 import type { MediaItem } from "../types/media";
 
+const formatRating = (rating: number) => rating.toFixed(1);
+
 const Home = () => {
     const [media, setMedia] = useState<MediaItem[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
@@ -36,9 +38,16 @@ const Home = () => {
 
     return (
         <main className="page">
-            <h1>Browse Movies & TV Shows</h1>
+            <section className="page-hero">
+                <p className="eyebrow">Browse</p>
+                <h1>Find your next movie night favorite.</h1>
+                <p className="page-subtitle">
+                    Explore community-reviewed movies and shows, then jump into the detail
+                    page for live audience activity and review breakdowns.
+                </p>
+            </section>
 
-            <div className="filters">
+            <div className="filters filters-panel">
                 <input
                     type="text"
                     placeholder="Search title..."
@@ -67,20 +76,40 @@ const Home = () => {
 
             <section className="media-grid" aria-label="Media list">
                 {filteredMedia.map((item) => {
-                    const rating = calculateMediaRating(item.id, mockReviews);
+                    const rating = calculateMediaRating(item._id, mockReviews);
 
                     return (
-                        <Link to={`/media/${item.id}`} className="media-card" key={item.id}>
+                        <Link
+                            to={`/media/${item._id}`}
+                            className="media-card"
+                            key={item._id}
+                        >
                             <img src={item.posterUrl} alt={`${item.title} poster`} />
 
                             <div className="media-card-body">
-                                <h2>{item.title}</h2>
+                                <div className="media-card-header">
+                                    <h2>{item.title}</h2>
+                                    <span className="badge">{item.type}</span>
+                                </div>
 
-                                <span className="badge">{item.type}</span>
-
-                                <p className="rating">
-                                    ⭐ {rating ?? "N/A"} • {item.genre} • {item.releaseYear}
+                                <p className="media-meta">
+                                    {item.genre} • {item.releaseYear}
                                 </p>
+
+                                <div className="rating-summary">
+                                    {rating !== null ? (
+                                        <>
+                                            <p className="rating-score">
+                                                ★ {formatRating(rating)}
+                                            </p>
+                                            <p className="rating-count">
+                                                ({mockReviews.filter(r => r.mediaId === item._id).length} reviews)
+                                            </p>
+                                        </>
+                                    ) : (
+                                        <p className="rating-empty">No reviews yet</p>
+                                    )}
+                                </div>
                             </div>
                         </Link>
                     );
