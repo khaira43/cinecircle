@@ -125,3 +125,20 @@ export const mockReviews: Review[] = [
         },
     },
 ];
+
+export const mockComments = [
+  {
+    id: "c1",
+    reviewId: "r1",
+    userId: "user-999",
+    username: "movielover",
+    content: "Totally agree, visuals were insane.",
+  },
+  {
+    id: "c2",
+    reviewId: "r2",
+    userId: "user-888",
+    username: "cinema_guy",
+    content: "Pacing was much better here.",
+  },
+];
