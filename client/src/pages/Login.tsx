@@ -22,6 +22,19 @@ const Login = () => {
   } = useForm<LoginFormData>();
 
   const onSubmit = async (data: LoginFormData) => {
+    //Test User
+    if (data.email === "test@test.com" && data.password === "123456") {
+      const fakeUser = {
+        id: "user-123",
+        username: "testuser",
+        email: data.email,
+      };
+
+      login(fakeUser, "fake-token");
+      navigate("/");
+      return;
+    }
+
     setServerError("");
     try {
       const response = await api.post("/auth/login", data);

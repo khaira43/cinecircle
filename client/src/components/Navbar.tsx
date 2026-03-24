@@ -13,6 +13,7 @@ const Navbar = () => {
     return (
         <nav className="navbar">
             <Link to="/">CineCircle</Link>
+
             <div className="navbar-links">
                 {isAuthenticated ? (
                     <>
@@ -25,6 +26,10 @@ const Navbar = () => {
                         <Link to="/register">Register</Link>
                     </>
                 )}
+
+                <Link to="/settings" className="settings-icon">
+                    ⚙️
+                </Link>
             </div>
         </nav>
     );
