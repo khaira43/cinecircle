@@ -4,7 +4,7 @@ import { getAverageRatings } from "../services/ratingService";
 
 export const getAllMedia = async (_req: Request, res: Response) => {
   try {
-    const mediaItems = await Media.find({}, "title type genre posterUrl");
+    const mediaItems = await Media.find({}, "title type genre posterUrl releaseYear");
 
     const mediaWithRatings = await Promise.all(
       mediaItems.map(async (item) => {
@@ -16,6 +16,7 @@ export const getAllMedia = async (_req: Request, res: Response) => {
           type: item.type,
           genre: item.genre,
           posterUrl: item.posterUrl,
+          releaseYear: item.releaseYear,
           averageRatings: {
             story: ratings.avgStory,
             acting: ratings.avgActing,
