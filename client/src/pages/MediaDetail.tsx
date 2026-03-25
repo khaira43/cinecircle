@@ -1,20 +1,28 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getMediaById, getReviewsByMediaId } from "../api/mediaApi";
+import api from "../api/axiosInstance";
 import { useAuth } from "../context/useAuth";
 import { socket } from "../socket";
 import type { MediaItem, Review } from "../types/media";
-import ReviewForm from "../components/reviews/ReviewForm";
 import CommentThread from "../components/reviews/CommentThread";
-import { mockComments } from "../mock/mockData";
 
 const formatRating = (rating: number) => rating.toFixed(1);
 
 const MediaDetail = () => {
     const [newReviewText, setNewReviewText] = useState("");
-    const [story, setStory] = useState(0);
-    const [acting, setActing] = useState(0);
-    const [cinematography, setCinematography] = useState(0)
+    const [story, setStory] = useState(5);
+    const [acting, setActing] = useState(5);
+    const [cinematography, setCinematography] = useState(5);
+    const [submitError, setSubmitError] = useState("");
+    const [submitting, setSubmitting] = useState(false);
+
+    const [editingReviewId, setEditingReviewId] = useState<string | null>(null);
+    const [editContent, setEditContent] = useState("");
+    const [editStory, setEditStory] = useState(5);
+    const [editActing, setEditActing] = useState(5);
+    const [editCinematography, setEditCinematography] = useState(5);
+
     const { id } = useParams();
     const { isAuthenticated, user } = useAuth();
 
@@ -31,17 +39,17 @@ const MediaDetail = () => {
         [key: string]: boolean;
     }>({});
 
-    useEffect(() => {
+    const loadData = async () => {
         if (!id) return;
+        const [mediaResult, reviewsResult] = await Promise.all([
+            getMediaById(id),
+            getReviewsByMediaId(id),
+        ]);
+        setMedia(mediaResult);
+        setReviews(reviewsResult);
+    };
 
-        const loadData = async () => {
-            const mediaResult = await getMediaById(id);
-            setMedia(mediaResult);
-
-            const reviewsResult = await getReviewsByMediaId(id);
-            setReviews(reviewsResult);
-        };
-
+    useEffect(() => {
         void loadData();
     }, [id]);
 
@@ -70,12 +78,83 @@ const MediaDetail = () => {
         };
     }, [id]);
 
-    const handleVote = (reviewId: string, type: "up" | "down") => {
+    const handleAddReview = async () => {
+        if (!newReviewText.trim() || !user) return;
+
+        setSubmitError("");
+        setSubmitting(true);
+
+        try {
+            await api.post("/reviews", {
+                mediaId: id,
+                content: newReviewText,
+                ratings: { story, acting, cinematography },
+            });
+
+            await loadData();
+
+            setNewReviewText("");
+            setStory(5);
+            setActing(5);
+            setCinematography(5);
+            setShowForm(false);
+        } catch (err: any) {
+            setSubmitError(err.response?.data?.message || "Failed to submit review.");
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    const handleStartEdit = (review: Review) => {
+        setEditingReviewId(review.id);
+        setEditContent(review.content);
+        setEditStory(review.ratings?.story ?? 5);
+        setEditActing(review.ratings?.acting ?? 5);
+        setEditCinematography(review.ratings?.cinematography ?? 5);
+    };
+
+    const handleSaveEdit = async (reviewId: string) => {
+        try {
+            await api.put(`/reviews/${reviewId}`, {
+                content: editContent,
+                ratings: {
+                    story: editStory,
+                    acting: editActing,
+                    cinematography: editCinematography,
+                },
+            });
+
+            await loadData();
+            setEditingReviewId(null);
+        } catch (err: any) {
+            alert(err.response?.data?.message || "Failed to update review.");
+        }
+    };
+
+    const handleCancelEdit = () => {
+        setEditingReviewId(null);
+    };
+
+    const handleDeleteReview = async (reviewId: string) => {
+        if (!confirm("Are you sure you want to delete this review?")) return;
+
+        try {
+            await api.delete(`/reviews/${reviewId}`);
+            await loadData();
+        } catch (err: any) {
+            alert(err.response?.data?.message || "Failed to delete review.");
+        }
+    };
+
+    const handleVote = async (reviewId: string, type: "up" | "down") => {
+        if (!isAuthenticated) return;
+
+        const value = type === "up" ? 1 : -1;
+        const currentVote = userVotes[reviewId];
+
         setReviews((prev) =>
             prev.map((r) => {
                 if (r.id !== reviewId) return r;
-
-                const currentVote = userVotes[reviewId];
 
                 let up = r.upvoteScore;
                 let down = r.downvoteScore;
@@ -88,11 +167,7 @@ const MediaDetail = () => {
                     if (type === "down") down++;
                 }
 
-                return {
-                    ...r,
-                    upvoteScore: up,
-                    downvoteScore: down,
-                };
+                return { ...r, upvoteScore: up, downvoteScore: down };
             })
         );
 
@@ -100,6 +175,25 @@ const MediaDetail = () => {
             ...prev,
             [reviewId]: prev[reviewId] === type ? null : type,
         }));
+
+        try {
+            if (currentVote === type) {
+                await api.delete(`/votes/${reviewId}`);
+            } else {
+                await api.post("/votes", { reviewId, value });
+            }
+
+            const res = await api.get(`/votes/count/${reviewId}`);
+            setReviews((prev) =>
+                prev.map((r) =>
+                    r.id === reviewId
+                        ? { ...r, upvoteScore: res.data.upvotes, downvoteScore: res.data.downvotes }
+                        : r
+                )
+            );
+        } catch (err) {
+            await loadData();
+        }
     };
 
     const toggleComments = (reviewId: string) => {
@@ -109,44 +203,13 @@ const MediaDetail = () => {
         }));
     };
 
-    const handleAddReview = () => {
-        if (!newReviewText.trim() || !user) return;
-
-        const newReview: Review = {
-        id: Date.now().toString(),
-        mediaId: id!,
-        userId: user.id,
-        username: user.username,
-        content: newReviewText,
-        upvoteScore: 0,
-        downvoteScore: 0,
-        commentCount: 0,
-        ratings: {
-            story,
-            acting,
-            cinematography,
-        },
-        };
-
-        setReviews((prev) => [newReview, ...prev]);
-
-        setNewReviewText("");
-        setStory(0);
-        setActing(0);
-        setCinematography(0);
-        setShowForm(false);
-        };
-
     const ratingBars = useMemo(() => {
         if (!media) return [];
 
         return [
             { label: "Story", value: media.averageRatings?.story ?? 0 },
             { label: "Acting", value: media.averageRatings?.acting ?? 0 },
-            {
-                label: "Cinematography",
-                value: media.averageRatings?.cinematography ?? 0,
-            },
+            { label: "Cinematography", value: media.averageRatings?.cinematography ?? 0 },
         ];
     }, [media]);
 
@@ -209,84 +272,135 @@ const MediaDetail = () => {
                 </div>
             </section>
 
+            {/* ── Reviews list ── */}
             <section>
                 <h2>Reviews</h2>
                 <div className="review-list">
+                    {reviews.length === 0 && (
+                        <p className="muted-text">No reviews yet. Be the first!</p>
+                    )}
+
                     {reviews.map((review) => {
                         const canEdit = isAuthenticated && user?.username === review.username;
                         const isOpen = openComments[review.id];
+                        const isEditing = editingReviewId === review.id;
 
                         return (
                             <article key={review.id} className="review-card">
                                 <div className="review-card-header">
                                     <h3>@{review.username}</h3>
-                                    <div className="review-rating-pills">
-                                        <span>Story {review.ratings?.story ?? 0}/10</span>
-                                        <span>Acting {review.ratings?.acting ?? 0}/10</span>
-                                        <span>
-                                            Cinematography {review.ratings?.cinematography ?? 0}/10
-                                        </span>
-                                    </div>
+                                    {!isEditing && (
+                                        <div className="review-rating-pills">
+                                            <span>Story {review.ratings?.story ?? 0}/10</span>
+                                            <span>Acting {review.ratings?.acting ?? 0}/10</span>
+                                            <span>Cinematography {review.ratings?.cinematography ?? 0}/10</span>
+                                        </div>
+                                    )}
                                 </div>
 
-                                <p>{review.content}</p>
-
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        gap: "16px",
-                                        marginTop: "10px",
-                                    }}
-                                >
-                                    <span
-                                        onClick={() => handleVote(review.id, "up")}
-                                        style={{
-                                            cursor: "pointer",
-                                            color:
-                                                userVotes[review.id] === "up" ? "#22c55e" : "#555",
-                                            fontWeight:
-                                                userVotes[review.id] === "up" ? "600" : "400",
-                                        }}
-                                    >
-                                        👍 {review.upvoteScore}
-                                    </span>
-
-                                    <span
-                                        onClick={() => handleVote(review.id, "down")}
-                                        style={{
-                                            cursor: "pointer",
-                                            color:
-                                                userVotes[review.id] === "down" ? "#ef4444" : "#555",
-                                            fontWeight:
-                                                userVotes[review.id] === "down" ? "600" : "400",
-                                        }}
-                                    >
-                                        👎 {review.downvoteScore}
-                                    </span>
-
-                                    <button
-                                        type="button"
-                                        onClick={() => toggleComments(review.id)}
-                                        style={{
-                                            background: "none",
-                                            border: "none",
-                                            color: "#6366f1",
-                                            cursor: "pointer",
-                                            fontWeight: 500,
-                                            padding: 0,
-                                        }}
-                                    >
-                                        {isOpen
-                                        ? "Hide comments"
-                                        : `Show comments (${mockComments.filter((c) => c.reviewId === review.id).length})`}
-                                    </button>
-                                </div>
-
-                                {canEdit && (
+                                {/* ── Edit mode ── */}
+                                {isEditing ? (
+                                    <div className="review-form">
+                                        <textarea
+                                            value={editContent}
+                                            onChange={(e) => setEditContent(e.target.value)}
+                                            style={{
+                                                width: "100%",
+                                                minHeight: "120px",
+                                                padding: "12px",
+                                                borderRadius: "10px",
+                                                border: "1px solid #ccc",
+                                                resize: "vertical",
+                                                fontSize: "14px",
+                                            }}
+                                        />
+                                        <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginTop: "12px" }}>
+                                            <div>
+                                                <label>Story: {editStory}/10</label>
+                                                <input
+                                                    type="range" min="1" max="10"
+                                                    value={editStory}
+                                                    onChange={(e) => setEditStory(Number(e.target.value))}
+                                                    style={{ width: "100%", accentColor: "#6366f1" }}
+                                                />
+                                            </div>
+                                            <div>
+                                                <label>Acting: {editActing}/10</label>
+                                                <input
+                                                    type="range" min="1" max="10"
+                                                    value={editActing}
+                                                    onChange={(e) => setEditActing(Number(e.target.value))}
+                                                    style={{ width: "100%", accentColor: "#6366f1" }}
+                                                />
+                                            </div>
+                                            <div>
+                                                <label>Cinematography: {editCinematography}/10</label>
+                                                <input
+                                                    type="range" min="1" max="10"
+                                                    value={editCinematography}
+                                                    onChange={(e) => setEditCinematography(Number(e.target.value))}
+                                                    style={{ width: "100%", accentColor: "#6366f1" }}
+                                                />
+                                            </div>
+                                        </div>
                                         <div style={{ marginTop: "12px", display: "flex", gap: "10px" }}>
-                                        <button type="button">Edit</button>
-                                        <button type="button">Delete</button>
+                                            <button type="button" onClick={() => handleSaveEdit(review.id)}>Save</button>
+                                            <button type="button" onClick={handleCancelEdit}>Cancel</button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <p>{review.content}</p>
+                                )}
+
+                                {/* ── Vote + comment controls ── */}
+                                {!isEditing && (
+                                    <div style={{ display: "flex", alignItems: "center", gap: "16px", marginTop: "10px" }}>
+                                        <span
+                                            onClick={() => isAuthenticated && handleVote(review.id, "up")}
+                                            style={{
+                                                cursor: isAuthenticated ? "pointer" : "not-allowed",
+                                                color: userVotes[review.id] === "up" ? "#22c55e" : "#555",
+                                                fontWeight: userVotes[review.id] === "up" ? "600" : "400",
+                                                opacity: isAuthenticated ? 1 : 0.5,
+                                            }}
+                                        >
+                                            👍 {review.upvoteScore}
+                                        </span>
+
+                                        <span
+                                            onClick={() => isAuthenticated && handleVote(review.id, "down")}
+                                            style={{
+                                                cursor: isAuthenticated ? "pointer" : "not-allowed",
+                                                color: userVotes[review.id] === "down" ? "#ef4444" : "#555",
+                                                fontWeight: userVotes[review.id] === "down" ? "600" : "400",
+                                                opacity: isAuthenticated ? 1 : 0.5,
+                                            }}
+                                        >
+                                            👎 {review.downvoteScore}
+                                        </span>
+
+                                        <button
+                                            type="button"
+                                            onClick={() => toggleComments(review.id)}
+                                            style={{
+                                                background: "none",
+                                                border: "none",
+                                                color: "#6366f1",
+                                                cursor: "pointer",
+                                                fontWeight: 500,
+                                                padding: 0,
+                                            }}
+                                        >
+                                            {isOpen ? "Hide comments" : `Show comments (${review.commentCount ?? 0})`}
+                                        </button>
+                                    </div>
+                                )}
+
+                                {/* ── Edit / Delete buttons ── */}
+                                {canEdit && !isEditing && (
+                                    <div style={{ marginTop: "12px", display: "flex", gap: "10px" }}>
+                                        <button type="button" onClick={() => handleStartEdit(review)}>Edit</button>
+                                        <button type="button" onClick={() => handleDeleteReview(review.id)}>Delete</button>
                                     </div>
                                 )}
 
@@ -297,82 +411,80 @@ const MediaDetail = () => {
                 </div>
             </section>
 
+            {/* ── Write a review ── */}
             {isAuthenticated && (
                 <section style={{ marginTop: "20px" }}>
-                    <button type="button" onClick={() => setShowForm((prev) => !prev)}>
+                    <button type="button" onClick={() => { setShowForm((prev) => !prev); setSubmitError(""); }}>
                         {showForm ? "Cancel" : "Write a Review"}
                     </button>
 
-                {showForm && (
-                <div className="review-form">
-                    <h3>Write a Review</h3>
+                    {showForm && (
+                        <div className="review-form">
+                            <h3>Write a Review</h3>
 
-                    <textarea
-                    placeholder="Write your thoughts..."
-                    value={newReviewText}
-                    maxLength={300}
-                    onChange={(e) => setNewReviewText(e.target.value)}
-                    style={{
-                        width: "100%",
-                        minHeight: "120px",
-                        padding: "12px",
-                        borderRadius: "10px",
-                        border: "1px solid #ccc",
-                        resize: "vertical",
-                        fontSize: "14px"
-                    }}
-                    />
-                    <p style={{ fontSize: "12px", color: "#666", marginTop: "4px" }}>
-                        {newReviewText.length}/300 characters
-                    </p>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginTop: "12px" }}>
+                            <textarea
+                                placeholder="Write your thoughts..."
+                                value={newReviewText}
+                                maxLength={300}
+                                onChange={(e) => setNewReviewText(e.target.value)}
+                                style={{
+                                    width: "100%",
+                                    minHeight: "120px",
+                                    padding: "12px",
+                                    borderRadius: "10px",
+                                    border: "1px solid #ccc",
+                                    resize: "vertical",
+                                    fontSize: "14px",
+                                }}
+                            />
+                            <p style={{ fontSize: "12px", color: "#666", marginTop: "4px" }}>
+                                {newReviewText.length}/300 characters
+                            </p>
 
-                    <div>
-                        <label>Story: {story}/10</label>
-                        <input
-                        type="range"
-                        min="1"
-                        max="10"
-                        value={story}
-                        onChange={(e) => setStory(Number(e.target.value))}
-                        style={{ width: "100%", accentColor: "#6366f1" }}
-                        />
-                    </div>
+                            <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginTop: "12px" }}>
+                                <div>
+                                    <label>Story: {story}/10</label>
+                                    <input
+                                        type="range" min="1" max="10"
+                                        value={story}
+                                        onChange={(e) => setStory(Number(e.target.value))}
+                                        style={{ width: "100%", accentColor: "#6366f1" }}
+                                    />
+                                </div>
+                                <div>
+                                    <label>Acting: {acting}/10</label>
+                                    <input
+                                        type="range" min="1" max="10"
+                                        value={acting}
+                                        onChange={(e) => setActing(Number(e.target.value))}
+                                        style={{ width: "100%", accentColor: "#6366f1" }}
+                                    />
+                                </div>
+                                <div>
+                                    <label>Cinematography: {cinematography}/10</label>
+                                    <input
+                                        type="range" min="1" max="10"
+                                        value={cinematography}
+                                        onChange={(e) => setCinematography(Number(e.target.value))}
+                                        style={{ width: "100%", accentColor: "#6366f1" }}
+                                    />
+                                </div>
+                            </div>
 
-                    <div>
-                        <label>Acting: {acting}/10</label>
-                        <input
-                        type="range"
-                        min="1"
-                        max="10"
-                        value={acting}
-                        onChange={(e) => setActing(Number(e.target.value))}
-                        style={{ width: "100%", accentColor: "#6366f1" }}
-                        />
-                    </div>
+                            {submitError && (
+                                <p style={{ color: "red", marginTop: "8px", fontSize: "14px" }}>{submitError}</p>
+                            )}
 
-                    <div>
-                        <label>Cinematography: {cinematography}/10</label>
-                        <input
-                        type="range"
-                        min="1"
-                        max="10"
-                        value={cinematography}
-                        onChange={(e) => setCinematography(Number(e.target.value))}
-                        style={{ width: "100%", accentColor: "#6366f1" }}
-                        />
-                    </div>
-
-                    </div>
-
-                    <button
-                    style={{ marginTop: "10px" }}
-                    onClick={handleAddReview}
-                    >
-                    Submit Review
-                    </button>
-                </div>
-                )}
+                            <button
+                                type="button"
+                                style={{ marginTop: "10px" }}
+                                onClick={handleAddReview}
+                                disabled={submitting}
+                            >
+                                {submitting ? "Submitting..." : "Submit Review"}
+                            </button>
+                        </div>
+                    )}
                 </section>
             )}
         </main>

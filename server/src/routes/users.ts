@@ -2,6 +2,9 @@ import { Router, Response } from "express";
 import bcrypt from "bcrypt";
 import User from "../models/User";
 import { protect, AuthRequest } from "../middleware/authMiddleware";
+import Review from "../models/Review";
+import Comment from "../models/Comment";
+import Vote from "../models/Vote";
 
 const router = Router();
 
@@ -112,9 +115,12 @@ router.delete("/me", protect, async (req: AuthRequest, res: Response) => {
       return res.status(401).json({ error: "Password is incorrect" });
     }
 
+    await Review.deleteMany({ userId });
+    await Comment.deleteMany({ userId });
+    await Vote.deleteMany({ userId });
     await user.deleteOne();
 
-    return res.status(204).json({ message: "Account deleted successfully" });
+    return res.status(204).send();
   } catch (err) {
     return res.status(500).json({ error: "Server error deleting account" });
   }

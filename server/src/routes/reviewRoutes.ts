@@ -1,5 +1,7 @@
 import { Router, Response } from "express";
 import Review from "../models/Review";
+import Vote from "../models/Vote";
+import Comment from "../models/Comment"; // Make sure you have a Comment model
 import { protect, AuthRequest } from "../middleware/authMiddleware";
 
 const router = Router();
@@ -12,9 +14,28 @@ router.get("/", async (req: AuthRequest, res: Response) => {
       return res.status(400).json({ error: "mediaId is required" });
     }
 
-    const reviews = await Review.find({ mediaId });
+    // Fetch reviews and populate username
+    const reviews = await Review.find({ mediaId })
+      .populate("userId", "username")
+      .lean(); // convert to plain JS objects so we can add fields
 
-    return res.status(200).json(reviews);
+    // Add vote counts and comment counts
+    const reviewsWithCounts = await Promise.all(
+      reviews.map(async (review) => {
+        const upvoteScore = await Vote.countDocuments({ reviewId: review._id, value: 1 });
+        const downvoteScore = await Vote.countDocuments({ reviewId: review._id, value: -1 });
+        const commentCount = await Comment.countDocuments({ reviewId: review._id });
+
+        return {
+          ...review,
+          upvoteScore,
+          downvoteScore,
+          commentCount,
+        };
+      })
+    );
+
+    return res.status(200).json(reviewsWithCounts);
   } catch (err) {
     console.error("GET ERROR:", err);
     return res.status(500).json({ error: String(err) });

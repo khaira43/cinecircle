@@ -76,4 +76,35 @@ router.delete("/:id", protect, async (req: AuthRequest, res: Response) => {
   }
 });
 
+router.put("/:id", protect, async (req: AuthRequest, res: Response) => {
+  try {
+    const userId = req.user!.userId;
+    const comment = await Comment.findById(req.params.id);
+
+    if (!comment) {
+      return res.status(404).json({ error: "Comment not found" });
+    }
+
+    if (comment.userId.toString() !== userId) {
+      return res.status(403).json({ error: "You can only edit your own comments" });
+    }
+
+    const { content } = req.body;
+
+    if (!content || content.trim().length < 3) {
+      return res.status(400).json({ error: "Content must be at least 3 characters" });
+    }
+
+    comment.content = content.trim();
+    await comment.save();
+
+    const populatedComment = await Comment.findById(comment._id).populate("userId", "username");
+
+    return res.status(200).json(populatedComment);
+  } catch (err) {
+    console.error("PUT COMMENT ERROR:", err);
+    return res.status(500).json({ error: "Server error updating comment" });
+  }
+});
+
 export default router;

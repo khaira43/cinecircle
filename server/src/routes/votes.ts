@@ -70,4 +70,17 @@ router.get("/count/:reviewId", async (req: AuthRequest, res: Response) => {
   }
 });
 
+router.get("/user", protect, async (req: AuthRequest, res: Response) => {
+  try {
+    const userId = req.user!.userId;
+
+    const votes = await Vote.find({ userId });
+
+    return res.status(200).json(votes);
+  } catch (err) {
+    console.error("GET USER VOTES ERROR:", err);
+    return res.status(500).json({ error: "Server error fetching user votes" });
+  }
+});
+
 export default router;
