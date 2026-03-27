@@ -69,7 +69,7 @@ router.delete("/:id", protect, async (req: AuthRequest, res: Response) => {
 
     await comment.deleteOne();
 
-    return res.status(200).json({ message: "Comment deleted successfully" });
+    return res.status(204).send();
   } catch (err) {
     console.error("DELETE COMMENT ERROR:", err);
     return res.status(500).json({ error: "Server error deleting comment" });

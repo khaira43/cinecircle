@@ -23,13 +23,13 @@ export const register = async (req: Request, res: Response) => {
     // Check if email already exists
     const existingEmail = await User.findOne({ email });
     if (existingEmail) {
-      return res.status(400).json({ error: "Email already in use" });
+      return res.status(409).json({ error: "Email already in use" });
     }
 
     // Check if username already exists
     const existingUsername = await User.findOne({ username });
     if (existingUsername) {
-      return res.status(400).json({ error: "Username already taken" });
+      return res.status(409).json({ error: "Username already taken" });
     }
 
     // Hash the password (10 salt rounds is standard)

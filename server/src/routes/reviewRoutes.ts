@@ -124,7 +124,7 @@ router.delete("/:id", protect, async (req: AuthRequest, res: Response) => {
 
     await review.deleteOne();
 
-    return res.status(200).json({ message: "Review deleted successfully" });
+    return res.status(204).send();
   } catch (err) {
     return res.status(500).json({ error: "Server error deleting review" });
   }
