@@ -67,6 +67,9 @@ web_modules/
 
 # dotenv environment variable files
 .env
+node_modules/
+.env.local
+.env.production
 .env.*
 !.env.example
 
@@ -77,10 +80,12 @@ web_modules/
 # Next.js build output
 .next
 out
+build/
 
 # Nuxt.js build / generate output
 .nuxt
 dist
+dist/
 
 # Gatsby files
 .cache/
@@ -97,6 +102,13 @@ dist
 
 # Sveltekit cache directory
 .svelte-kit/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
 
 # vitepress build output
 **/.vitepress/dist
@@ -137,3 +149,5 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+.idea/
