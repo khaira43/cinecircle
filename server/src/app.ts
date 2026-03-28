@@ -70,4 +70,8 @@ app.use("/api/comments", commentRoutes);
 app.use("/api/votes", voteRoutes);
 app.use("/api/users", userRoutes);
 
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
 export { app, httpServer, io };
