@@ -99,7 +99,7 @@ const MediaDetail = () => {
             setCinematography(5);
             setShowForm(false);
         } catch (err: any) {
-            setSubmitError(err.response?.data?.message || "Failed to submit review.");
+            setSubmitError(err.response?.data?.error || "Failed to submit review.");
         } finally {
             setSubmitting(false);
         }
@@ -127,7 +127,7 @@ const MediaDetail = () => {
             await loadData();
             setEditingReviewId(null);
         } catch (err: any) {
-            alert(err.response?.data?.message || "Failed to update review.");
+            alert(err.response?.data?.error || "Failed to update review.");
         }
     };
 
@@ -142,7 +142,7 @@ const MediaDetail = () => {
             await api.delete(`/reviews/${reviewId}`);
             await loadData();
         } catch (err: any) {
-            alert(err.response?.data?.message || "Failed to delete review.");
+            alert(err.response?.data?.error || "Failed to delete review.");
         }
     };
 
