@@ -88,48 +88,37 @@ const CommentThread = ({ reviewId }: Props) => {
     }
   };
 
-  if (loading) return <p style={{ fontSize: "13px" }}>Loading comments...</p>;
+  if (loading) return <p className="muted-text comment-loading">Loading comments...</p>;
 
   return (
-    <div style={{ marginTop: "12px", marginLeft: "12px" }}>
-      {error && (
-        <p style={{ color: "red", fontSize: "13px" }}>{error}</p>
-      )}
+    <div className="comment-thread">
+      {error && <p className="form-error">{error}</p>}
 
       {comments.map((c) => {
         const isOwner = user?.id === c.userId._id;
 
         return (
-          <div
-            key={c._id}
-            style={{
-              marginTop: "10px",
-              padding: "10px 14px",
-              borderRadius: "10px",
-              background: "#f3f4f6",
-              fontSize: "14px",
-            }}
-          >
-            <strong style={{ fontSize: "13px" }}>@{c.userId.username}</strong>
+          <div key={c._id} className="comment-bubble">
+            <strong className="comment-author">@{c.userId.username}</strong>
 
             {editingId === c._id ? (
               <>
                 <input
+                  className="comment-edit-input"
                   value={editText}
                   onChange={(e) => setEditText(e.target.value)}
-                  style={{ width: "100%", marginTop: "6px", padding: "6px" }}
                 />
-                <div style={{ marginTop: "6px", display: "flex", gap: "6px" }}>
+                <div className="button-row-sm">
                   <button onClick={() => saveEdit(c._id)}>Save</button>
                   <button onClick={() => setEditingId(null)}>Cancel</button>
                 </div>
               </>
             ) : (
-              <p style={{ margin: "4px 0 0 0" }}>{c.content}</p>
+              <p className="comment-text">{c.content}</p>
             )}
 
             {isOwner && editingId !== c._id && (
-              <div style={{ display: "flex", gap: "6px", marginTop: "6px" }}>
+              <div className="button-row-sm">
                 <button onClick={() => startEdit(c)}>Edit</button>
                 <button onClick={() => handleDelete(c._id)}>Delete</button>
               </div>
@@ -139,22 +128,14 @@ const CommentThread = ({ reviewId }: Props) => {
       })}
 
       {isAuthenticated && (
-        <div style={{ marginTop: "12px" }}>
+        <div className="comment-add">
           <input
+            className="comment-input"
             placeholder="Add a comment..."
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
-            style={{
-              width: "100%",
-              padding: "8px",
-              borderRadius: "6px",
-              border: "1px solid #ccc",
-            }}
           />
-          <button
-            onClick={handleAdd}
-            style={{ marginTop: "6px", padding: "6px 12px" }}
-          >
+          <button className="comment-post-btn" onClick={handleAdd}>
             Post
           </button>
         </div>

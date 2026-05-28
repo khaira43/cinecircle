@@ -27,9 +27,11 @@ const Navbar = () => {
                     </>
                 )}
 
-                <Link to="/settings" className="settings-icon">
-                    ⚙️
-                </Link>
+                {isAuthenticated && (
+                    <Link to="/settings" className="settings-link">
+                        Settings
+                    </Link>
+                )}
             </div>
         </nav>
     );

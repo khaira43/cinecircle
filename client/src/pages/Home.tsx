@@ -7,6 +7,7 @@ const formatRating = (rating: number) => rating.toFixed(1);
 
 const Home = () => {
     const [media, setMedia] = useState<MediaItem[]>([]);
+    const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
     const [genreFilter, setGenreFilter] = useState("All");
 
@@ -14,6 +15,7 @@ const Home = () => {
         const loadMedia = async () => {
             const result = await getMedia();
             setMedia(result);
+            setLoading(false);
         };
 
         void loadMedia();
@@ -65,7 +67,12 @@ const Home = () => {
                 </select>
             </div>
 
+            {loading && <p className="muted-text">Loading catalogue...</p>}
+
             <section className="media-grid" aria-label="Media list">
+                {!loading && filteredMedia.length === 0 && (
+                    <p className="muted-text">No results found.</p>
+                )}
                 {filteredMedia.map((item) => (
                     <Link
                         to={`/media/${item._id}`}

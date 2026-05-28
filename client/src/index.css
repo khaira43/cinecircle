@@ -413,9 +413,15 @@ button:disabled {
   }
 }
 
-.settings-icon {
-  margin-left: 10px;
-  font-size: 1.2rem;
+.settings-link {
+  margin-left: 4px;
+  color: #94a3b8;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.settings-link:hover {
+  color: #fff;
 }
 
 .auth-container section {
@@ -442,6 +448,13 @@ button:disabled {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.settings-container section:first-of-type {
+  border-top: none;
+  padding-top: 0;
 }
 
 .settings-container h1 {
@@ -456,4 +469,246 @@ button:disabled {
 .danger-btn {
   background: #e53935;
   color: white;
+  border-color: #e53935;
+}
+
+.danger-btn:hover {
+  background: #c62828;
+  border-color: #c62828;
+}
+
+.danger-btn-full {
+  width: 100%;
+  padding: 10px;
+}
+
+.success-msg {
+  color: #15803d;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.delete-confirm-box {
+  margin-top: 10px;
+  padding: 15px;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  background: #fff5f5;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.delete-confirm-warning {
+  font-weight: 700;
+  margin: 0;
+  color: #991b1b;
+}
+
+/* ── Review form ── */
+
+.review-form {
+  margin-top: 0.75rem;
+}
+
+.review-textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  resize: vertical;
+  font: inherit;
+  font-size: 14px;
+  background: #fff;
+}
+
+.review-textarea:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.slider-group {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.rating-slider {
+  width: 100%;
+  accent-color: #6366f1;
+  border: none;
+  padding: 0;
+}
+
+.char-count {
+  margin: 4px 0 0;
+  font-size: 0.82rem;
+  color: #64748b;
+}
+
+.form-error {
+  color: #b91c1c;
+  margin: 8px 0 0;
+  font-size: 0.9rem;
+}
+
+.button-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.write-review-section {
+  margin-top: 1.5rem;
+}
+
+/* ── Vote controls ── */
+
+.vote-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.vote-btn {
+  cursor: pointer;
+  color: #475569;
+  font-weight: 500;
+  user-select: none;
+  transition: color 0.15s;
+}
+
+.vote-btn:hover {
+  color: #1e293b;
+}
+
+.vote-active-up {
+  color: #22c55e;
+  font-weight: 600;
+}
+
+.vote-active-down {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.vote-disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.comment-toggle-btn {
+  background: none;
+  border: none;
+  color: #6366f1;
+  cursor: pointer;
+  font-weight: 500;
+  padding: 0;
+  font-size: inherit;
+}
+
+.comment-toggle-btn:hover {
+  color: #4338ca;
+  background: none;
+  border: none;
+}
+
+/* ── Comment thread ── */
+
+.comment-thread {
+  margin-top: 12px;
+  margin-left: 12px;
+}
+
+.comment-bubble {
+  margin-top: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #f3f4f6;
+  font-size: 14px;
+}
+
+.comment-author {
+  font-size: 13px;
+}
+
+.comment-text {
+  margin: 4px 0 0;
+}
+
+.comment-loading {
+  font-size: 13px;
+}
+
+.comment-edit-input {
+  width: 100%;
+  margin-top: 6px;
+  padding: 6px;
+}
+
+.button-row-sm {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.button-row-sm button {
+  padding: 4px 10px;
+  font-size: 0.82rem;
+}
+
+.comment-add {
+  margin-top: 12px;
+}
+
+.comment-input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+}
+
+.comment-post-btn {
+  margin-top: 6px;
+  padding: 6px 12px;
+}
+
+/* ── 404 page ── */
+
+.not-found {
+  text-align: center;
+  padding-top: 4rem;
+}
+
+.not-found h1 {
+  font-size: 5rem;
+  color: #6366f1;
+  margin-bottom: 0.5rem;
+}
+
+.not-found p {
+  color: #64748b;
+  font-size: 1.15rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ── Live indicator pulse ── */
+
+.live-indicator::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #be123c;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
 }

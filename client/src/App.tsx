@@ -6,6 +6,8 @@ import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
 import MediaDetail from "./pages/MediaDetail";
 import Settings from "./pages/Settings";
+import NotFound from "./pages/NotFound";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const App = () => {
     return (
@@ -17,7 +19,8 @@ const App = () => {
                     <Route path="/login" element={<Login />} />
                     <Route path="/" element={<Home />} />
                     <Route path="/media/:id" element={<MediaDetail />} />
-                    <Route path="/settings" element={<Settings />} />
+                    <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+                    <Route path="*" element={<NotFound />} />
                 </Routes>
             </BrowserRouter>
         </AuthProvider>

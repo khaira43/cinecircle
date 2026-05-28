@@ -7,7 +7,6 @@ const Settings = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
 
-  // Profile section
   const [isEditing, setIsEditing] = useState(false);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -15,7 +14,6 @@ const Settings = () => {
   const [profileSuccess, setProfileSuccess] = useState("");
   const [profileError, setProfileError] = useState("");
 
-  // Password section
   const [showPasswordForm, setShowPasswordForm] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -23,7 +21,6 @@ const Settings = () => {
   const [passwordError, setPasswordError] = useState("");
   const [passwordSuccess, setPasswordSuccess] = useState("");
 
-  // Delete section
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deletePassword, setDeletePassword] = useState("");
   const [deleteError, setDeleteError] = useState("");
@@ -130,7 +127,6 @@ const Settings = () => {
       <div className="settings-container">
         <h1>Settings</h1>
 
-        {/* ── Profile ── */}
         <section>
           <h2>Profile</h2>
 
@@ -139,8 +135,8 @@ const Settings = () => {
               <p><strong>Username:</strong> {username}</p>
               <p><strong>Email:</strong> {email}</p>
               <p><strong>Bio:</strong> {bio || "No bio yet"}</p>
-              {profileSuccess && <p style={{ color: "green" }}>{profileSuccess}</p>}
-              {profileError && <p style={{ color: "red" }}>{profileError}</p>}
+              {profileSuccess && <p className="success-msg">{profileSuccess}</p>}
+              {profileError && <p className="form-error">{profileError}</p>}
               <button onClick={() => setIsEditing(true)}>Edit Profile</button>
             </>
           ) : (
@@ -161,8 +157,8 @@ const Settings = () => {
                 placeholder="Bio (max 300 characters)"
                 maxLength={300}
               />
-              {profileError && <p style={{ color: "red" }}>{profileError}</p>}
-              <div style={{ display: "flex", gap: "10px" }}>
+              {profileError && <p className="form-error">{profileError}</p>}
+              <div className="button-row">
                 <button onClick={() => setIsEditing(false)}>Cancel</button>
                 <button onClick={handleSaveProfile}>Save Changes</button>
               </div>
@@ -170,13 +166,12 @@ const Settings = () => {
           )}
         </section>
 
-        {/* ── Password ── */}
-        <section style={{ marginTop: "30px" }}>
+        <section>
           <h2>Password</h2>
 
           {!showPasswordForm ? (
             <>
-              {passwordSuccess && <p style={{ color: "green" }}>{passwordSuccess}</p>}
+              {passwordSuccess && <p className="success-msg">{passwordSuccess}</p>}
               <button onClick={() => setShowPasswordForm(true)}>Change Password</button>
             </>
           ) : (
@@ -199,8 +194,8 @@ const Settings = () => {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
-              {passwordError && <p style={{ color: "red" }}>{passwordError}</p>}
-              <div style={{ display: "flex", gap: "10px" }}>
+              {passwordError && <p className="form-error">{passwordError}</p>}
+              <div className="button-row">
                 <button onClick={() => setShowPasswordForm(false)}>Cancel</button>
                 <button onClick={handlePasswordChange}>Update Password</button>
               </div>
@@ -208,34 +203,19 @@ const Settings = () => {
           )}
         </section>
 
-        {/* ── Delete Account ── */}
-        <section style={{ marginTop: "30px" }}>
+        <section>
           <h2>Delete Account</h2>
 
           {!showDeleteConfirm ? (
             <button
-              style={{
-                background: "#ef4444",
-                color: "white",
-                padding: "10px",
-                borderRadius: "8px",
-                width: "100%",
-              }}
+              className="danger-btn danger-btn-full"
               onClick={() => setShowDeleteConfirm(true)}
             >
               Delete Account
             </button>
           ) : (
-            <div
-              style={{
-                marginTop: "15px",
-                padding: "15px",
-                border: "1px solid #eee",
-                borderRadius: "10px",
-                background: "#fff5f5",
-              }}
-            >
-              <p style={{ fontWeight: "bold", marginBottom: "10px" }}>
+            <div className="delete-confirm-box">
+              <p className="delete-confirm-warning">
                 Are you sure? This cannot be undone.
               </p>
               <input
@@ -243,12 +223,9 @@ const Settings = () => {
                 placeholder="Enter your password to confirm"
                 value={deletePassword}
                 onChange={(e) => setDeletePassword(e.target.value)}
-                style={{ marginBottom: "10px", width: "100%" }}
               />
-              {deleteError && (
-                <p style={{ color: "red", marginBottom: "10px" }}>{deleteError}</p>
-              )}
-              <div style={{ display: "flex", gap: "10px" }}>
+              {deleteError && <p className="form-error">{deleteError}</p>}
+              <div className="button-row">
                 <button
                   onClick={() => {
                     setShowDeleteConfirm(false);
@@ -259,7 +236,7 @@ const Settings = () => {
                   Cancel
                 </button>
                 <button
-                  style={{ background: "#ef4444", color: "white" }}
+                  className="danger-btn"
                   onClick={handleDeleteAccount}
                 >
                   Confirm Delete
