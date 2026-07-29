@@ -73,7 +73,7 @@ Make sure you have the following installed:
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/group4-eecs4314/cinecircle.git
+git clone https://github.com/khaira43/cinecircle.git
 cd cinecircle
 ```
 
@@ -83,13 +83,13 @@ cd server
 cp .env.example .env
 ```
 
-Open `.env` and fill in your values
+Open `.env` and fill in your values (see [Environment Variables](#environment-variables)).
 ```bash
 npm install
 npm run dev
 ```
 
-The backend will start on `http://localhost:5001`.
+The backend will start on `http://localhost:5000`.
 
 ### 3. Set up the frontend
 
@@ -101,7 +101,8 @@ cp .env.example .env
 
 Open `.env` and set:
 ```
-VITE_API_URL=http://localhost:5001
+VITE_API_BASE_URL=http://localhost:5000
+VITE_API_URL=http://localhost:5000
 ```
 ```bash
 npm install
@@ -109,6 +110,53 @@ npm run dev
 ```
 
 The frontend will start on `http://localhost:5173`.
+
+---
+
+## Environment Variables
+
+### Backend (`server/.env`)
+
+| Variable | Description |
+|----------|-------------|
+| `PORT` | Port the API server listens on (defaults to `5000`). |
+| `MONGO_URI` | Connection string for the development/production MongoDB database. |
+| `TEST_MONGO_URI` | Connection string for the test database used by `npm run test`. |
+| `JWT_SECRET` | Secret used to sign and verify JWT authentication tokens. |
+| `CLIENT_URL` | Allowed frontend origin for CORS (e.g. `http://localhost:5173`). |
+
+### Frontend (`client/.env`)
+
+| Variable | Description |
+|----------|-------------|
+| `VITE_API_BASE_URL` | Base URL of the backend API (e.g. `http://localhost:5000`). |
+| `VITE_API_URL` | Base URL of the backend API (e.g. `http://localhost:5000`). |
+
+Both `server/.env.example` and `client/.env.example` list these variables so you
+can copy them with `cp .env.example .env` and fill in your own values.
+
+---
+
+## Seeding the Database
+
+The backend includes a seed script (`server/seed.ts`) that populates the
+`Media` collection with a starter catalogue of movies and shows. It connects
+using `MONGO_URI`, clears any existing media, then inserts the seed data.
+
+Make sure `MONGO_URI` is set in `server/.env`, then run:
+```bash
+cd server
+npx ts-node seed.ts
+```
+
+Expected output:
+```
+Database seeded successfully
+```
+
+> ⚠️ The seed script deletes all existing documents in the `Media`
+> collection before inserting, so do not run it against a database whose
+> media you want to keep.
 
 ---
 
@@ -156,6 +204,36 @@ in the final project report.
 | Backend | Render | Runs the Node.js/Express API server |
 | Database | MongoDB Atlas | Hosts the production MongoDB cluster |
 
+
+---
+
+## Project Structure
+
+```
+cinecircle/
+├── client/                 # React + TypeScript + Vite frontend
+│   └── src/
+│       ├── api/            # API client wrappers
+│       ├── assets/         # Static assets
+│       ├── components/     # Reusable UI components
+│       ├── context/        # React context providers (auth, etc.)
+│       ├── pages/          # Route-level page components
+│       ├── types/          # Shared TypeScript types
+│       └── socket.ts       # Socket.io client setup
+├── server/                 # Node.js + Express + TypeScript backend
+│   ├── src/
+│   │   ├── controllers/   # Request handlers
+│   │   ├── middleware/    # Auth and validation middleware
+│   │   ├── models/        # Mongoose models
+│   │   ├── routes/        # Express route definitions
+│   │   ├── services/      # Business logic
+│   │   ├── db.ts          # Database connection
+│   │   ├── app.ts         # Express app setup
+│   │   └── index.ts       # Server entry point (HTTP + WebSocket)
+│   ├── tests/             # Jest + Supertest test suites
+│   └── seed.ts            # Database seed script
+└── README.md
+```
 
 ---
 
